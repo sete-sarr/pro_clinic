@@ -1,0 +1,140 @@
+{% extends "dashboard.html" %}
+{% block content %}
+
+<style>
+    .form-card {
+        background: hsl(180, 100%, 100%);
+        border-radius: 12px;
+        color: #fff;
+    }
+
+    .form-control, .form-select {
+        background: #ebedf0;
+        border: none;
+        color: #fff;
+    }
+
+    .form-control:focus, .form-select:focus {
+        background: #1e293b;
+        color: #fff;
+        box-shadow: 0 0 0 2px #3b82f6;
+    }
+
+    .input-group-text {
+        background: #1e293b;
+        border: none;
+        color: #94a3b8;
+    }
+
+    label {
+        font-weight: 500;
+        margin-bottom: 5px;
+    }
+
+    .btn-primary {
+        background: #3b82f6;
+        border: none;
+    }
+
+    .btn-primary:hover {
+        background: #2563eb;
+    }
+</style>
+
+<div class="container mt-4 border rounded p-0 bg-light">
+  
+    <div class="form-card p-4 shadow col-lg-7 mx-auto">
+
+        <h4 class="mb-4 text-center text-black font-weight-bold">
+            👤 Nouveau patient
+        </h4>
+
+        <form method="post">
+            {% csrf_token %}
+
+            <!-- NOM + PRENOM -->
+            <div class="row">
+                 <div class="col-md-6 mb-3">
+                    <label>Prénom</label>
+                    <div class="input-group">
+                        <span class="input-group-text">👤</span>
+                        {{ form.prenom }}
+                    </div>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label>Nom</label>
+                    <div class="input-group">
+                        <span class="input-group-text">👤</span>
+                        {{ form.nom }}
+                    </div>
+                </div>
+
+               
+            </div>
+
+            <!-- DATE + SEXE -->
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label>Date de naissance</label>
+                    <div class="input-group">
+                        <span class="input-group-text">📅</span>
+                        {{ form.date_naissance }}
+                    </div>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label>Sexe</label>
+                    <div class="input-group">
+                        <span class="input-group-text">⚧️</span>
+                        {{ form.sexe }}
+                    </div>
+                </div>
+            </div>
+
+            <!-- TELEPHONE -->
+            <div class="mb-3">
+                <label>Téléphone</label>
+                <div class="input-group">
+                    <span class="input-group-text">📞</span>
+                    {{ form.telephone }}
+                </div>
+            </div>
+             <!-- EMAIL -->
+             <div class="mb-3">
+                <label>Email</label>
+                <div class="input-group">
+                    <span class="input-group-text">✉️</span>
+                    {{ form.email }}
+                </div>
+            </div>
+
+            <!-- ADRESSE -->
+            <div class="mb-3">
+                <label>Adresse</label>
+                <div class="input-group">
+                    <span class="input-group-text">📍</span>
+                    {{ form.adresse }}
+                </div>
+            </div>
+
+            <!-- GROUPE SANGUIN -->
+            <div class="mb-4">
+                <label>Groupe sanguin</label>
+                <div class="input-group">
+                    <span class="input-group-text">🩸</span>
+                    {{ form.groupe_sanguin }}
+                </div>
+            </div>
+
+            <!-- BOUTON -->
+            <div class="d-grid">
+                <button type="submit" class="btn btn-primary btn-lg">
+                    💾 Enregistrer le patient
+                </button>
+            </div>
+
+        </form>
+    </div>
+</div>
+
+{% endblock %}

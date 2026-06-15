@@ -1,0 +1,40 @@
+{% extends "base_auth.html" %}
+{% block title %}Connexion{% endblock %}
+
+{% block content %}
+<h4 class="text-center mb-4">Connexion</h4>
+
+<form method="post" novalidate>
+    {% csrf_token %}
+
+    <div class="mb-3">
+        <label class="form-label">Adresse email</label>
+        <input
+            type="email"
+            name="username"
+            class="form-control"
+            placeholder="exemple@email.com"
+            required>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Mot de passe</label>
+        <input
+            type="password"
+            name="password"
+            class="form-control"
+            placeholder="••••••••"
+            required>
+    </div>
+
+    <button type="submit" class="btn btn-primary w-100 mb-3">
+        Se connecter
+    </button>
+
+    <div class="text-center">
+        <a href="{% url 'comptes:password_reset' %}" class="text-decoration-none">
+            Mot de passe oublié ?
+        </a>
+    </div>
+</form>
+{% endblock %}

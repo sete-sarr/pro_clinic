@@ -1,0 +1,148 @@
+{% extends "dashboard.html" %}
+{% block title %}Consultations{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h3 class="mb-0"><i class="bi bi-person-heart"></i>liste des patients patients</h3>
+    <a href="{% url 'patient:creation_patient' %}" class="btn btn-primary">
+        <i class="bi bi-person-plus"></i> Nouveau patient
+    </a>
+</div>
+
+
+<!-- 🔍 FILTRES -->
+<div class="card shadow-sm mb-4 p-3">
+    <form method="get" class="row g-3">
+        <div class="col-md-4 col-sm-6">
+            <label class="text-black font-weight-bold"><i class="bi bi-person"></i> Prenom</label>
+            <input type="text" name="prenom" class="form-control"
+                   value="{{ request.GET.prenom }}">
+        </div>
+
+        <div class="col-md-3 col-sm-6">
+            <label class="text-black font-weight-bold"><i class="bi bi-person"></i> Nom</label>
+            <input type="date" name="nom" class="form-control"
+                   value="{{ request.GET.nom }}">
+        </div>
+
+        <div class="col-md-3 col-sm-12">
+            <label class="text-black font-weight-bold"><i class="bi bi-telephone"></i> Telephone</label>
+            <input type="date" name="telephone" class="form-control"
+                   value="{{ request.GET.telephone }}">
+        </div>
+
+        <div class="col-md-2 d-flex align-items-end">
+            <button type="submit" class="btn btn-success w-100">
+                <i class="bi bi-search"></i> 
+            </button>
+        </div>
+    </form>
+
+    <div class="mt-2">
+        <a href="{% url 'patient:list_patient' %}" class="btn btn-sm btn-secondary">
+            <i class="bi bi-arrow-clockwise"></i> Réinitialiser
+        </a>
+    </div>
+</div>
+
+
+
+<div class="card shadow-md  m-2 " style="height: 250px;">
+    <div class="table-responsive">
+        <table class="table table-light table-hover align-middle mb-0 text-center table-striped table-bordered">
+            <thead>
+                <tr>
+                    <th>nom</th>
+                    <th>prenom</th>
+                    <th>civilite</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for patient in patients %}
+                <tr>
+                    <td>{{patient.nom}} </td>
+                    
+                    <td>{{patient.prenom }}  </td>
+
+                    <td>{{ patient.sexe}}</td>
+                    
+                    <td>
+                        
+                        <a href="{% url 'patient:detail_patient' patient.id %}"
+                           class="btn btn-md btn-outline-secondary">
+                            <i class="bi bi-eye"></i> 
+                        </a>
+                        <a href="{% url 'patient:actualiser_patient' patient.id %}"
+                           class="btn btn-md btn-outline-primary">
+                           <i class="bi bi-pencil"></i>
+                        </a>
+
+                        <a href="{% url 'patient:supprimer_patient' patient.id %}"
+                           class="btn btn-md btn-outline-warning"><i class="bi bi-trash"></i>
+                    
+                        </a>
+
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="4" class="text-center text-white">
+                        Aucune consultation enregistrée
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+<!-- 🔢 PAGINATION -->
+<nav class="mt-4">
+    <ul class="pagination justify-content-center">
+
+        {% if page_obj.has_previous %}
+        <li class="page-item">
+            <a class="page-link"
+               href="?page={{ page_obj.previous_page_number }}&{{ query_params.urlencode }}">
+                Précédent
+            </a>
+        </li>
+        {% endif %}
+
+        {% for num in page_obj.paginator.page_range %}
+            {% if num >= page_obj.number|add:-2 and num <= page_obj.number|add:2 %}
+                {% if page_obj.number == num %}
+                    <li class="page-item active">
+                        <span class="page-link">{{ num }}</span>
+                    </li>
+                {% else %}
+                    <li class="page-item">
+                        <a class="page-link"
+                           href="?page={{ num }}&{{ query_params.urlencode }}">
+                            {{ num }}
+                        </a>
+                    </li>
+                {% endif %}
+            {% endif %}
+        {% endfor %}
+
+        {% if page_obj.has_next %}
+        <li class="page-item">
+            <a class="page-link"
+               href="?page={{ page_obj.next_page_number }}&{{ query_params.urlencode }}">
+                Suivant
+            </a>
+        </li>
+        {% endif %}
+
+    </ul>
+</nav>
+
+<p class="text-center text-muted">
+    Page {{ page_obj.number }} sur {{ page_obj.paginator.num_pages }}
+</p>
+
+
+{% endblock %}

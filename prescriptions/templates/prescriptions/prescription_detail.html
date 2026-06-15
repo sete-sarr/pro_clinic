@@ -1,0 +1,40 @@
+{% extends "dashboard.html" %}
+{% block title %}Détail prescription{% endblock %}
+
+{% block content %}
+<div class="card p-4 shadow-sm">
+    <h4 class="mb-3">🩺 prescription du {{ prescription.date|date:"d/m/Y" }}</h4>
+
+    <div class="row mb-3">
+        <div class="col-md-6">
+            <strong>Patient :</strong> {{ prescription.patient.nom }}{{ prescription.patient.prenom }}
+        </div>
+        <div class="col-md-6">
+            <strong>Médecin :</strong> {{ prescription.medecin.email }}
+        </div>
+    </div>
+
+    <hr>
+
+    <div class="mb-3">
+        <h6 class="text-white">Diagnostic</h6>
+        <p class="text-white">{{ prescription.diagnostic }}</p>
+    </div>
+
+    <div class="mb-3">
+        <h6 class="text-white">Traitement</h6>
+        <p class="text-white">{{ prescription.traitement }}</p>
+    </div>
+
+    <div class="mt-4">
+        <a href="#"
+           class="btn btn-warning">
+            Modifier
+        </a>
+        <a href="{% url 'prescriptions:list_prescriptions' %}"
+           class="btn btn-secondary">
+            Retour
+        </a>
+    </div>
+</div>
+{% endblock %}

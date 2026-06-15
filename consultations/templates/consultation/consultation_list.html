@@ -1,0 +1,693 @@
+{% extends "dashboard.html" %}
+{% block title %}Consultations{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid py-4">
+
+    <!-- HEADER -->
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+
+        <div>
+
+            <h2 class="page-title">
+                <i class="bi bi-heart-pulse-fill me-2"></i>
+                Consultations
+            </h2>
+
+            <p class="page-subtitle">
+                Gestion des consultations médicales
+            </p>
+
+        </div>
+
+        <a href="{% url 'consultations:creer' %}"
+           class="btn-add">
+
+            <i class="bi bi-plus-lg"></i>
+
+        </a>
+
+    </div>
+
+
+
+    <!-- FILTRES -->
+    <div class="filter-card mb-4">
+
+        <form method="get">
+
+            <div class="row g-3">
+
+                <!-- PATIENT -->
+                <div class="col-12 col-md-4">
+
+                    <label class="filter-label">
+
+                        <i class="bi bi-person-fill me-1"></i>
+                        Patient
+
+                    </label>
+
+                    <div class="input-wrapper">
+
+                        <i class="bi bi-search input-icon"></i>
+
+                        <input
+                            type="text"
+                            name="patient"
+                            class="custom-input"
+                            placeholder="Nom du patient"
+                            value="{{ request.GET.patient }}"
+                        >
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- DATE DEBUT -->
+                <div class="col-12 col-md-3">
+
+                    <label class="filter-label">
+
+                        <i class="bi bi-calendar-event me-1"></i>
+                        Date début
+
+                    </label>
+
+                    <div class="input-wrapper">
+
+                        <input
+                            type="date"
+                            name="date_du"
+                            class="custom-input"
+                            value="{{ request.GET.date_du }}"
+                        >
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- DATE FIN -->
+                <div class="col-12 col-md-3">
+
+                    <label class="filter-label">
+
+                        <i class="bi bi-calendar-check me-1"></i>
+                        Date fin
+
+                    </label>
+
+                    <div class="input-wrapper">
+
+                        <input
+                            type="date"
+                            name="date_au"
+                            class="custom-input"
+                            value="{{ request.GET.date_au }}"
+                        >
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- BUTTON -->
+                <div class="col-12 col-md-2 d-flex align-items-end">
+
+                    <button type="submit"
+                            class="btn-search w-100">
+
+                        <i class="bi bi-search"></i>
+
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <!-- RESET -->
+            <div class="mt-3">
+
+                <a href="{% url 'consultations:list' %}"
+                   class="btn-reset">
+
+                    <i class="bi bi-arrow-clockwise me-1"></i>
+                    Réinitialiser
+
+                </a>
+
+            </div>
+
+        </form>
+
+    </div>
+
+
+
+    <!-- CARTES -->
+    <div class="row g-4">
+
+        {% for consultation in consultations %}
+
+        <div class="col-12 col-md-4 col-xl-4">
+
+            <div class="consultation-card">
+
+                <!-- TOP -->
+                <div class="card-top">
+
+                    <div>
+
+                        <h5 class="patient-name">
+
+                            {{ consultation.patient.prenom }}
+                            {{ consultation.patient.nom }}
+
+                        </h5>
+
+                        <p class="consultation-subtitle">
+
+                            Consultation médicale
+
+                        </p>
+
+                    </div>
+
+
+                    <!-- ICON -->
+                    <div class="heart-box">
+
+                        <i class="bi bi-heart-pulse"></i>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- DATE -->
+                <div class="mb-3">
+
+                    <span class="date-badge">
+
+                        <i class="bi bi-calendar-event me-1"></i>
+
+                        {{ consultation.date|date:"d/m/Y H:i" }}
+
+                    </span>
+
+                </div>
+
+
+
+                <!-- DOCTOR -->
+                <div class="doctor-box">
+
+                    <i class="bi bi-person-badge-fill"></i>
+
+                    <span>
+
+                        <strong>Médecin :</strong>
+                        Dr. {{ consultation.medecin.user.first_name }}
+
+                    </span>
+
+                </div>
+
+
+
+                <!-- ACTIONS -->
+                <div class="actions">
+
+                    <a href="{% url 'consultations:detail' consultation.id %}"
+                       class="action-btn view-btn">
+
+                        <i class="bi bi-eye"></i>
+
+                    </a>
+
+
+                    <a href="{% url 'consultations:modifier' consultation.id %}"
+                       class="action-btn edit-btn">
+
+                        <i class="bi bi-pencil"></i>
+
+                    </a>
+
+
+                    <a href="{% url 'consultations:supprimer' consultation.id %}"
+                       class="action-btn delete-btn">
+
+                        <i class="bi bi-trash"></i>
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        {% empty %}
+
+        <div class="col-12">
+
+            <div class="empty-card">
+
+                <i class="bi bi-inbox"></i>
+
+                <h4>Aucune consultation trouvée</h4>
+
+                <p>Aucune donnée disponible pour le moment</p>
+
+            </div>
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+
+
+    <!-- PAGINATION -->
+    <nav class="mt-5">
+
+        <ul class="pagination justify-content-center">
+
+            {% if page_obj.has_previous %}
+
+            <li class="page-item">
+
+                <a class="page-link"
+                   href="?page={{ page_obj.previous_page_number }}&{{ query_params.urlencode }}">
+
+                    <i class="bi bi-chevron-left"></i>
+
+                </a>
+
+            </li>
+
+            {% endif %}
+
+
+
+            {% for num in page_obj.paginator.page_range %}
+
+                {% if num >= page_obj.number|add:-2 and num <= page_obj.number|add:2 %}
+
+                    {% if page_obj.number == num %}
+
+                    <li class="page-item active">
+
+                        <span class="page-link">
+
+                            {{ num }}
+
+                        </span>
+
+                    </li>
+
+                    {% else %}
+
+                    <li class="page-item">
+
+                        <a class="page-link"
+                           href="?page={{ num }}&{{ query_params.urlencode }}">
+
+                            {{ num }}
+
+                        </a>
+
+                    </li>
+
+                    {% endif %}
+
+                {% endif %}
+
+            {% endfor %}
+
+
+
+            {% if page_obj.has_next %}
+
+            <li class="page-item">
+
+                <a class="page-link"
+                   href="?page={{ page_obj.next_page_number }}&{{ query_params.urlencode }}">
+
+                    <i class="bi bi-chevron-right"></i>
+
+                </a>
+
+            </li>
+
+            {% endif %}
+
+        </ul>
+
+    </nav>
+
+
+    <p class="pagination-text">
+
+        Page {{ page_obj.number }}
+        sur
+        {{ page_obj.paginator.num_pages }}
+
+    </p>
+
+</div>
+
+
+
+
+
+<style>
+
+    body{
+        background:#f8fafc;
+    }
+
+
+
+    /* HEADER */
+
+    .page-title{
+        font-size:2rem;
+        font-weight:700;
+        color:#0f172a;
+        margin-bottom:5px;
+    }
+
+    .page-title i{
+        color:#2563eb;
+    }
+
+    .page-subtitle{
+        color:#64748b;
+        margin:0;
+    }
+
+    .btn-add{
+        width:55px;
+        height:55px;
+        border-radius:18px;
+        background:linear-gradient(135deg,#3b82f6,#2563eb);
+        color:white;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        text-decoration:none;
+        font-size:24px;
+        box-shadow:0 10px 25px rgba(37,99,235,.25);
+        transition:.3s;
+    }
+
+    .btn-add:hover{
+        transform:translateY(-2px);
+        color:white;
+    }
+
+
+
+    /* FILTER */
+
+    .filter-card{
+        background:white;
+        border-radius:24px;
+        padding:24px;
+        box-shadow:0 10px 30px rgba(15,23,42,.05);
+    }
+
+    .filter-label{
+        font-weight:600;
+        color:#334155;
+        margin-bottom:10px;
+        display:block;
+    }
+
+    .input-wrapper{
+        position:relative;
+    }
+
+    .input-icon{
+        position:absolute;
+        left:15px;
+        top:50%;
+        transform:translateY(-50%);
+        color:#94a3b8;
+    }
+
+    .custom-input{
+        width:100%;
+        height:54px;
+        border-radius:16px;
+        border:1px solid #dbeafe;
+        background:#f8fafc;
+        padding:0 15px 0 45px;
+        outline:none;
+        transition:.3s;
+    }
+
+    .custom-input:focus{
+        border-color:#2563eb;
+        background:white;
+        box-shadow:0 0 0 4px rgba(37,99,235,.1);
+    }
+
+    .btn-search{
+        height:54px;
+        border:none;
+        border-radius:16px;
+        background:linear-gradient(135deg,#3b82f6,#2563eb);
+        color:white;
+        font-size:20px;
+        transition:.3s;
+    }
+
+    .btn-search:hover{
+        transform:translateY(-2px);
+    }
+
+    .btn-reset{
+        background:#f1f5f9;
+        color:#334155;
+        padding:10px 18px;
+        border-radius:14px;
+        text-decoration:none;
+        font-weight:500;
+        transition:.3s;
+    }
+
+    .btn-reset:hover{
+        background:#e2e8f0;
+        color:#0f172a;
+    }
+
+
+
+    /* CARD */
+
+    .consultation-card{
+        background:white;
+        border-radius:28px;
+        padding:24px;
+        box-shadow:0 10px 30px rgba(15,23,42,.05);
+        height:100%;
+        transition:.3s;
+    }
+
+    .consultation-card:hover{
+        transform:translateY(-5px);
+    }
+
+    .card-top{
+        display:flex;
+        justify-content:space-between;
+        align-items:flex-start;
+        margin-bottom:20px;
+    }
+
+    .patient-name{
+        font-size:1.3rem;
+        font-weight:700;
+        color:#0f172a;
+        margin-bottom:5px;
+    }
+
+    .consultation-subtitle{
+        color:#64748b;
+        margin:0;
+    }
+
+    .heart-box{
+        width:60px;
+        height:60px;
+        border-radius:50%;
+        background:#eff6ff;
+        color:#2563eb;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        font-size:24px;
+    }
+
+
+
+    /* DATE */
+
+    .date-badge{
+        background:#eff6ff;
+        color:#2563eb;
+        padding:10px 16px;
+        border-radius:30px;
+        font-size:14px;
+        font-weight:600;
+        display:inline-flex;
+        align-items:center;
+    }
+
+
+
+    /* DOCTOR */
+
+    .doctor-box{
+        display:flex;
+        align-items:center;
+        gap:10px;
+        color:#475569;
+        margin-bottom:25px;
+    }
+
+    .doctor-box i{
+        color:#2563eb;
+        font-size:18px;
+    }
+
+
+
+    /* ACTIONS */
+
+    .actions{
+        display:flex;
+        gap:14px;
+    }
+
+    .action-btn{
+        flex:1;
+        height:52px;
+        border-radius:16px;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        text-decoration:none;
+        font-size:20px;
+        transition:.3s;
+    }
+
+    .action-btn:hover{
+        transform:scale(1.05);
+    }
+
+    .view-btn{
+        background:#e0f2fe;
+        color:#0284c7;
+    }
+
+    .edit-btn{
+        background:#fef3c7;
+        color:#ca8a04;
+    }
+
+    .delete-btn{
+        background:#ffe4e6;
+        color:#e11d48;
+    }
+
+
+
+    /* EMPTY */
+
+    .empty-card{
+        background:white;
+        border-radius:28px;
+        padding:70px 20px;
+        text-align:center;
+        box-shadow:0 10px 30px rgba(15,23,42,.05);
+    }
+
+    .empty-card i{
+        font-size:70px;
+        color:#94a3b8;
+        margin-bottom:20px;
+    }
+
+    .empty-card h4{
+        color:#0f172a;
+        font-weight:700;
+    }
+
+    .empty-card p{
+        color:#64748b;
+    }
+
+
+
+    /* PAGINATION */
+
+    .pagination .page-link{
+        width:46px;
+        height:46px;
+        border:none;
+        border-radius:14px;
+        margin:0 5px;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        background:white;
+        color:#334155;
+        box-shadow:0 4px 15px rgba(0,0,0,.05);
+    }
+
+    .pagination .active .page-link{
+        background:#2563eb;
+        color:white;
+    }
+
+    .pagination-text{
+        text-align:center;
+        color:#64748b;
+        margin-top:15px;
+    }
+
+
+
+    /* MOBILE */
+
+    @media(max-width:768px){
+
+        .page-title{
+            font-size:1.6rem;
+        }
+
+        .filter-card{
+            padding:20px;
+        }
+
+        .consultation-card{
+            padding:20px;
+        }
+
+    }
+
+</style>
+
+{% endblock %}

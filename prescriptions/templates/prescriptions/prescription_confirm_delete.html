@@ -1,0 +1,25 @@
+{% extends "dashboard.html" %}
+{% block title %}Supprimer prescription{% endblock %}
+
+{% block content %}
+<div class="card p-4 shadow-sm col-md-6 mx-auto text-center">
+    <h4 class="text-danger mb-3">⚠️ Supprimer la prescription</h4>
+
+    <p>
+        Confirmez-vous la suppression de la prescription du
+        <strong>{{ prescription.date_prescription|date:"d/m/Y" }} et dont le patient est {{ prescription.patient }}</strong> ?
+    </p>
+
+    <form method="post">
+        {% csrf_token %}
+        <div class="d-flex justify-content-center gap-3 mt-4">
+            <a href="{% url 'prescriptions:list_prescriptions' %}" class="btn btn-secondary">
+                Annuler
+            </a>
+            <button class="btn btn-danger">
+                Supprimer
+            </button>
+        </div>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,197 @@
+{% extends "dashboard.html" %}
+{% block content %}
+
+<style>
+    #facture-table input,
+    #facture-table select {
+        width: 100%;
+        min-width: 100px;
+    }
+
+    #facture-table td {
+        vertical-align: middle;
+    }
+
+    .table-responsive {
+        overflow-x: auto;
+    }
+
+    .ligne-total {
+        font-weight: bold;
+    }
+
+    /* css for print */
+    @media print {
+
+    /* cacher sidebar + navbar */
+    .sidebar, .navbar, #add-row, .delete-row, button {
+        display: none !important;
+    }
+
+    body {
+        background: white !important;
+        color: black !important;
+    }
+
+    .card {
+        box-shadow: none !important;
+        border: none !important;
+    }
+
+    table {
+        border: 1px solid black;
+    }
+
+    th, td {
+        border: 1px solid black !important;
+
+    }
+    tbody tr td input, tbody tr td select {
+        border: none !important;
+        background: transparent !important;
+        pointer-events: none !important;
+        
+    }
+    
+
+    #total-general {
+        font-size: 20px;
+        font-weight: bold;
+    }
+}
+</style>
+<div class="mb-4">
+    <h3>🧾 Facture</h3>
+    <p><strong>Patient :</strong> {{ facture.patient }}</p>
+    <p><strong>Date :</strong> {{ facture.date }}</p>
+</div>
+
+<div class="card p-4 shadow-sm col-lg-10 mx-auto">
+    <h4 class="mb-4">➕ Nouvelle facture</h4>
+
+    <form method="post">
+        {% csrf_token %}
+        {{ formset.management_form }}
+
+        <div class="table-responsive">
+            <table class="table table-sm table-bordered align-middle" id="facture-table">
+                <thead class="table-light">
+                    <tr>
+                        <th style="width:120px;">Quantité</th>
+                        <th style="width:150px;">Prix</th>
+                        <th>Médicament</th>
+                        <th style="width:120px;">Total</th>
+                        <th style="width:80px;"></th>
+                    </tr>
+                </thead>
+
+                <tbody id="formset-body">
+                    {% for form in formset %}
+                    <tr class="form-row">
+                        <td>{{ form.quantite }}</td>
+                        <td>{{ form.prix }}</td>
+                        <td>{{ form.medicament }}</td>
+                        <td class="ligne-total">0</td>
+                        <td>
+                            <button type="button" class="btn btn-danger btn-sm delete-row">
+                                ✖
+                            </button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <button type="button" id="add-row" class="btn btn-success mb-3">
+            + Ajouter ligne
+        </button>
+
+        <div class="text-end">
+            <h5>Total général : <span id="total-general">0</span> FCFA</h5>
+        </div>
+
+        <div class="text-end mt-3">
+            <button type="submit" class="btn btn-primary">
+                Enregistrer
+            </button>
+        </div>
+
+        <div class="text-end mt-3">
+           <button type="button" onclick="printFacture()" class="btn btn-dark">
+        🖨️ Imprimer
+         </button>
+         </div>
+    </form>
+    <a href="{% url 'facturations:facture_pdf' facture.id %}" target="_blank">📄 Télécharger en PDF</a>
+</div>
+
+<script>
+    function printFacture() {
+    window.print();
+}
+document.addEventListener("DOMContentLoaded", function () {
+   
+
+    const addBtn = document.getElementById("add-row");
+    const tableBody = document.getElementById("formset-body");
+    const totalForms = document.querySelector('[name$="TOTAL_FORMS"]');
+
+    if (!totalForms) {
+        console.error("TOTAL_FORMS introuvable !");
+        return;
+    }
+
+    // 🔢 Calcul automatique
+    function updateTotal() {
+        let totalGeneral = 0;
+
+        document.querySelectorAll(".form-row").forEach(row => {
+            let qty = parseFloat(row.querySelector('input[name$="quantite"]')?.value) || 0;
+            let price = parseFloat(row.querySelector('input[name$="prix"]')?.value) || 0;
+
+            let total = qty * price;
+
+            row.querySelector(".ligne-total").innerText = total;
+            totalGeneral += total;
+        });
+
+        document.getElementById("total-general").innerText = totalGeneral;
+    }
+
+    // ➕ Ajouter ligne
+    addBtn.addEventListener("click", function () {
+        let formCount = parseInt(totalForms.value);
+
+        let firstRow = document.querySelector(".form-row");
+        if (!firstRow) return;
+
+        let newRow = firstRow.cloneNode(true);
+
+        newRow.innerHTML = newRow.innerHTML.replace(/form-\d+/g, `form-${formCount}`);
+
+        newRow.querySelectorAll("input, select").forEach(input => {
+            input.value = "";
+        });
+
+        tableBody.appendChild(newRow);
+        totalForms.value = formCount + 1;
+    });
+
+    // ❌ Supprimer ligne (event delegation)
+    tableBody.addEventListener("click", function (e) {
+        if (e.target.classList.contains("delete-row")) {
+            e.target.closest("tr").remove();
+            updateTotal();
+        }
+    });
+
+    // 🔄 Recalcul automatique
+    tableBody.addEventListener("input", function () {
+        updateTotal();
+    });
+
+});
+</script>
+
+{% endblock %}

@@ -1,0 +1,40 @@
+{% extends "dashboard.html" %}
+{% block title %}Détail consultation{% endblock %}
+
+{% block content %}
+<div class="card p-4 shadow-sm">
+    <h4 class="mb-3 text-black font-bold-600 py-10"> <i class="bi bi-calendar"></i> RENDEZ-VOU  du {{ rendez_vous.date|date:"d/m/Y" }}</h4>
+
+    <div class="row mb-3">
+        <div class="col-md-6 text-black">
+            <strong class="text-black"><i class="bi bi-person"></i>Patient :</strong> {{ rendez_vous.patient.nom }}      {{ rendez_vous.patient.prenom }}
+        </div>
+        <div class="col-md-6 text-black">
+            <strong text-black>Médecin :</strong> {{ rendez_vous.medecin }}
+        </div>
+    </div>
+
+    <hr>
+
+    <div class="my-5">
+        <h6 class="text-black font-bold-600">Heure</h6>
+        <p class="text-black">{{ rendez_vous.heure }}</p>
+    </div>
+
+    <div class="mb-3">
+        <h6 class="text-black"><strong>Statut :</strong>{{ rendez_vous.statut }}</h6>
+        
+    </div>
+
+    <div class="mt-4">
+        <a href="{% url 'rendez_vous:modifier' rendez_vous.id %}"
+           class="btn btn-primary">
+            Modifier
+        </a>
+        <a href="{% url 'rendez_vous:list' %}"
+           class="btn btn-secondary">
+            Retour
+        </a>
+    </div>
+</div>
+{% endblock %}

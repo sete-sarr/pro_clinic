@@ -1,0 +1,143 @@
+{% extends "dashboard.html" %}
+{% block title %}Prescriptions{% endblock %}
+
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h3 class="mb-0"><i class="bi bi-prescription"></i> Prescriptions </h3>
+    <a href="{% url 'prescriptions:create_prescription' %}" class="btn btn-primary">
+        <i class="bi bi-plus-circle"></i> <I class="bi bi-prescription"></I>
+    </a>
+</div>
+
+<!-- 🔍 FILTRES -->
+<div class="card shadow-sm mb-4 p-3">
+    <form method="get" class="row g-3">
+        <div class="col-md-4 col-sm-6">
+            <label class="text-black font-weight-bold"><i class="bi bi-person"></i> Patient</label>
+            <input type="text" name="patient" class="form-control"
+                   value="{{ request.GET.patient }}">
+        </div>
+
+        <div class="col-md-3 col-sm-6">
+            <label class="text-black font-weight-bold"><i class="bi bi-calendar"></i> Date début</label>
+            <input type="date" name="date_du" class="form-control"
+                   value="{{ request.GET.date_du }}">
+        </div>
+
+        <div class="col-md-3 col-sm-12">
+            <label class="text-black font-weight-bold"><i class="bi bi-calendar"></i> Date fin</label>
+            <input type="date" name="date_au" class="form-control"
+                   value="{{ request.GET.date_au }}">
+        </div>
+
+        <div class="col-md-2 d-flex align-items-end">
+            <button type="submit" class="btn btn-success w-100">
+                <i class="bi bi-search"></i>
+            </button>
+        </div>
+    </form>
+
+    <div class="mt-2">
+        <a href="{% url 'prescriptions:list_prescriptions' %}" class="btn btn-sm btn-secondary">
+            <i class="bi bi-arrow-clockwise"></i> Réinitialiser
+        </a>
+    </div>
+</div>
+
+<!-- 📋 TABLE -->
+<div class="card shadow-sm m-2 " style="height: 250px;">
+    <div class="table-responsive">
+        <table class="table table-light table-hover align-middle mb-0 text-center table-striped table-bordered">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>PRENOM</th>
+                    <th>NOM</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for prescription in prescriptions %}
+                <tr>
+                    <td>{{ prescription.date|date:"d/m/Y H:i" }}</td>
+                    
+                    <td>
+                     {{ prescription.patient.prenom  }}   
+                    </td>
+                      
+
+                    <td>
+                        
+                     {{ prescription.patient.nom }}
+                    <td>
+                        
+                           
+                        <a href="{% url 'prescriptions:update_prescription' prescription.id %}" class="btn btn-sm btn-outline-primary"><i class="bi bi-pencil"></i></a>
+                      
+                        <a href="{% url 'prescriptions:delete_prescription' prescription.id %}" class="btn btn-sm btn-outline-warning"><i class="bi bi-trash"></i></a>
+                        <a href="{% url 'prescriptions:create_detail_prescription' prescription.id %}" class="btn btn-sm btn-outline-secondary">{% if prescription.details_prescription.all %}<i class="bi bi-pencil"></i>{% else %}<i class="bi bi-plus-circle"></i>{% endif %}</a>
+                        <a href="{% url 'prescriptions:prescription_pdf' prescription.id %}" class="btn btn-sm btn-outline-success"><i class="bi bi-file-earmark-pdf"></i></a>
+                            
+                        
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="4" class="text-center text-white">
+                        Aucune prescription trouvée
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- 🔢 PAGINATION -->
+<nav class="mt-4">
+    <ul class="pagination justify-content-center">
+
+        {% if page_obj.has_previous %}
+        <li class="page-item">
+            <a class="page-link"
+               href="?page={{ page_obj.previous_page_number }}&{{ query_params.urlencode }}">
+                Précédent
+            </a>
+        </li>
+        {% endif %}
+
+        {% for num in page_obj.paginator.page_range %}
+            {% if num >= page_obj.number|add:-2 and num <= page_obj.number|add:2 %}
+                {% if page_obj.number == num %}
+                    <li class="page-item active">
+                        <span class="page-link">{{ num }}</span>
+                    </li>
+                {% else %}
+                    <li class="page-item">
+                        <a class="page-link"
+                           href="?page={{ num }}&{{ query_params.urlencode }}">
+                            {{ num }}
+                        </a>
+                    </li>
+                {% endif %}
+            {% endif %}
+        {% endfor %}
+
+        {% if page_obj.has_next %}
+        <li class="page-item">
+            <a class="page-link"
+               href="?page={{ page_obj.next_page_number }}&{{ query_params.urlencode }}">
+                Suivant
+            </a>
+        </li>
+        {% endif %}
+
+    </ul>
+</nav>
+
+<p class="text-center text-muted">
+    Page {{ page_obj.number }} sur {{ page_obj.paginator.num_pages }}
+</p>
+
+{% endblock %}

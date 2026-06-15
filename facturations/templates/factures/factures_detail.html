@@ -1,0 +1,40 @@
+{% extends "dashboard.html" %}
+{% block title %}Détail consultation{% endblock %}
+
+{% block content %}
+<div class="card p-4 shadow-sm">
+    <h4 class="mb-3">🩺 Consultation du {{ consultation.date|date:"d/m/Y" }}</h4>
+
+    <div class="row mb-3">
+        <div class="col-md-6">
+            <strong>Patient :</strong> {{ consultation.patient.nom }}{{ consultation.patient.prenom }}
+        </div>
+        <div class="col-md-6">
+            <strong>Médecin :</strong> {{ consultation.medecin.email }}
+        </div>
+    </div>
+
+    <hr>
+
+    <div class="mb-3">
+        <h6 class="text-white">Diagnostic</h6>
+        <p class="text-white">{{ consultation.diagnostic }}</p>
+    </div>
+
+    <div class="mb-3">
+        <h6 class="text-white">Traitement</h6>
+        <p class="text-white">{{ consultation.traitement }}</p>
+    </div>
+
+    <div class="mt-4">
+        <a href="#"
+           class="btn btn-warning">
+            Modifier
+        </a>
+        <a href="{% url 'consultations:list' %}"
+           class="btn btn-secondary">
+            Retour
+        </a>
+    </div>
+</div>
+{% endblock %}

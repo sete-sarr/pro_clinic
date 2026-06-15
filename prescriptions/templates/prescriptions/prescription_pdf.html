@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+
+<style>
+@page {
+    size: A4;
+    margin: 20mm;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    font-size: 13px;
+    color: #1f2937;
+}
+
+/* HEADER */
+.header {
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 3px solid #2563eb;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+}
+
+.clinic-name {
+    font-size: 20px;
+    font-weight: bold;
+    color: #2563eb;
+}
+
+.facture-box {
+    text-align: right;
+    font-size: 13px;
+}
+
+/* INFOS */
+.info {
+    margin-bottom: 20px;
+}
+
+.info strong {
+    color: #111827;
+}
+
+/* TABLE */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+th {
+    background: #2563eb;
+    color: white;
+    padding: 10px;
+    font-size: 13px;
+}
+
+td {
+    padding: 10px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+/* Alternance lignes */
+tr:nth-child(even) {
+    background-color: #f9fafb;
+}
+
+/* ALIGNEMENT */
+.text-right {
+    text-align: right;
+}
+
+/* TOTAL */
+.total-box {
+    margin-top: 30px;
+    width: 300px;
+    margin-left: auto;
+    border-top: 2px solid #000;
+    padding-top: 10px;
+}
+
+.total-line {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 5px;
+}
+
+.total-final {
+    font-size: 18px;
+    font-weight: bold;
+    color: #111;
+}
+
+/* BADGE STATUT */
+.badge {
+    padding: 5px 10px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: bold;
+    display: inline-block;
+}
+
+.paye { background: #22c55e; color: white; }
+.nonpaye { background: #ef4444; color: white; }
+
+/* FOOTER */
+.footer {
+    margin-top: 50px;
+    text-align: center;
+    font-size: 12px;
+    color: #6b7280;
+}
+</style>
+
+</head>
+
+<body>
+
+<!-- HEADER -->
+<div class="header">
+    <div>
+        <div class="clinic-name">🏥 Clinique Santé+</div>
+        <div>Dakar, Sénégal</div>
+        <div>Tél: 77 000 00 00</div>
+    </div>
+
+    <div class="facture-box">
+        <strong>prescription</strong><br>
+        N°: {{ prescription.id }}<br>
+        Date: {{ prescription.date }}<br>
+
+        
+    </div>
+</div>
+
+<!-- INFOS -->
+<div class="info">
+    <strong>Patient :</strong> {{ prescription.patient }}<br>
+</div>
+
+<!-- TABLE -->
+<table>
+    <thead>
+        <tr>
+            <th>Medicament</th>
+            <th>Dosage</th>
+            <th>Frequance</th>
+            <th >Duree</th>
+            <th >Quantité</th>
+             <th >Instructions</th>
+            
+        </tr>
+    </thead>
+
+    <tbody>
+        {% for item in lignes %}
+        <tr>
+            
+            <td>{{ item.medicament }}</td>
+            <td>{{ item.dosage }}</td>
+            <td>{{ item.frequance }}</td>
+            <td>{{ item.duree }}</td>
+            <td>{{ item.quantite }}</td>
+            <td>{{ item.instructions }}</td>
+        </tr>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+
+
+<!-- FOOTER -->
+<div class="footer">
+    Merci pour votre confiance 🙏<br>
+    Clinique Santé+ | Système de gestion médicale
+</div>
+
+</body>
+</html>

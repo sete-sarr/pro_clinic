@@ -1,0 +1,15 @@
+{% extends "base_auth.html" %}
+{% block title %}Déconnexion{% endblock %}
+
+{% block content %}
+<div class="text-center">
+    <h4 class="mb-3 text-white">Déconnexion</h4>
+    <p class="text-white mb-4">
+        Vous avez été déconnecté avec succès.
+    </p>
+
+    <a href="{% url 'comptes:login' %}" class="btn btn-primary w-100">
+        Se reconnecter
+    </a>
+</div>
+{% endblock %}

@@ -1,0 +1,487 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard | Clinique</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css"
+          rel="stylesheet">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+
+    <!-- Chart JS -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+
+        body{
+            background-color: #f5f7fb;
+        }
+
+        /* DASHBOARD CARDS */
+        .card-dashboard{
+            border-radius: 16px;
+            color: white;
+            height: 150px;
+            border: none;
+        }
+
+        .bg-blue{
+            background-color: #3b82f6;
+        }
+
+        .bg-green{
+            background-color: #10b981;
+        }
+
+        .bg-orange{
+            background-color: #f97316;
+        }
+
+        .bg-purple{
+            background-color: #8b5cf6;
+        }
+
+        /* NAVBAR */
+        .navbar-expand-lg{
+            background: linear-gradient(180deg,#220346,#020617);
+        }
+
+        /* SIDEBAR */
+        .sidebar{
+            width: 260px;
+            min-height: 100vh;
+            background: linear-gradient(180deg,#220346,#020617);
+        }
+
+        .sidebar a{
+            text-decoration: none;
+            color: white;
+            padding: 12px;
+            border-radius: 10px;
+            transition: 0.3s;
+        }
+
+        .sidebar a:hover{
+            background-color: rgba(255,255,255,0.1);
+        }
+
+        /* CONTENT */
+        .content{
+            min-height: 100vh;
+        }
+
+        /* FOOTER */
+        .footer-site{
+            background: linear-gradient(180deg,#220346,#020617);
+        }
+
+        /* CHART */
+        .chart-container{
+            background: white;
+            border-radius: 20px;
+            padding: 20px;
+            margin-top: 40px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+
+        /* TOAST */
+        .toast{
+            opacity: 1 !important;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="d-flex">
+
+    <!-- SIDEBAR -->
+    <div class="sidebar d-none d-lg-block p-4">
+
+        <h4 class="mb-4 text-white">
+            🏥 Clinique
+        </h4>
+
+        <nav class="d-flex flex-column gap-2">
+
+            <a href="{% url 'comptes:dashboard' %}">
+                <i class="bi bi-speedometer2"></i>
+                Dashboard
+            </a>
+             <Hr class="border rounded"></Hr>
+
+            <a href="{% url 'consultations:list' %}">
+                <i class="bi bi-heart-pulse"></i>
+                Consultations
+            </a>
+            <a href="{% url 'prescriptions:list_prescriptions' %}">
+                 <i class="bi bi-journal-medical"></i>
+                    Prescriptions
+            </a>
+
+            <a href="{% url 'rendez_vous:list' %}">
+                <i class="bi bi-calendar-event"></i>
+                Rendez-vous
+            </a>
+            <Hr class="border rounded"></Hr>
+
+            <a href="{% url 'patient:list_patient' %}">
+                <i class="bi bi-people"></i>
+                Patients
+            </a>
+
+            <a href="#">
+                <i class="bi bi-person-badge"></i>
+                Docteurs
+            </a>
+             <Hr class="border rounded"></Hr>
+
+            <a href="{% url 'facturations:list_factures' %}">
+                <i class="bi bi-receipt"></i>
+                Facturation
+            </a>
+
+            <a href="{% url 'comptes:rapport' %}">
+                <i class="bi bi-bar-chart"></i>
+                Rapports
+            </a>
+
+            <a href="{% url 'comptes:admin_dashboard' %}">
+                <i class="bi bi-gear"></i>
+                Panel Admin
+            </a>
+
+        </nav>
+
+    </div>
+
+    <!-- MAIN -->
+    <div class="flex-grow-1 content">
+
+        <!-- NAVBAR -->
+        <nav class="navbar navbar-expand-lg px-4 border-bottom mb-4">
+
+            <div class="container-fluid">
+
+                <!-- MOBILE BUTTON -->
+                <button class="btn btn-outline-light d-lg-none"
+                        data-bs-toggle="offcanvas"
+                        data-bs-target="#mobileMenu">
+
+                    <i class="bi bi-list"></i>
+
+                </button>
+
+                <!-- USER -->
+                <span class="navbar-text ms-3 text-white">
+
+                    {% if user.is_authenticated %}
+
+                        Bonjour
+                        <strong>{{ user.prenom }}</strong>
+
+                    {% else %}
+
+                        Bienvenue sur la plateforme
+
+                    {% endif %}
+
+                </span>
+
+                <!-- LOGOUT -->
+                <div class="ms-auto">
+
+                    {% if user.is_authenticated %}
+
+                        <form action="{% url 'comptes:logout' %}"
+                              method="post">
+
+                            {% csrf_token %}
+
+                            <button type="submit"
+                                    class="btn btn-success">
+
+                                Se déconnecter
+
+                            </button>
+
+                        </form>
+
+                    {% else %}
+
+                        <a href="{% url 'comptes:login' %}"
+                           class="btn btn-outline-light">
+
+                            Connexion
+
+                        </a>
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+        </nav>
+
+        <!-- CONTENT -->
+        {% block content %}
+
+        <div class="container py-4">
+
+            <!-- CARDS -->
+            <div class="row g-4">
+
+                <div class="col-md-3">
+
+                    <div class="card card-dashboard bg-blue p-4 text-center">
+
+                        <h6>
+                            <i class="bi bi-people"></i>
+                            Patients
+                        </h6>
+
+                        <h2>{{ nb_patient }}</h2>
+
+                    </div>
+
+                </div>
+
+                <div class="col-md-3">
+
+                    <div class="card card-dashboard bg-green p-4 text-center">
+
+                        <h6>
+                            <i class="bi bi-person-badge"></i>
+                            Docteurs
+                        </h6>
+
+                        <h2>{{ nb_medecin }}</h2>
+
+                    </div>
+
+                </div>
+
+                <div class="col-md-3">
+
+                    <div class="card card-dashboard bg-orange p-4 text-center">
+
+                        <h6>
+                            <i class="bi bi-calendar-event"></i>
+                            Rendez-vous
+                        </h6>
+
+                        <h2>{{ nb_rendez_vous }}</h2>
+
+                    </div>
+
+                </div>
+
+                <div class="col-md-3">
+
+                    <div class="card card-dashboard bg-purple p-4 text-center">
+
+                        <h6>
+                            <i class="bi bi-file-medical"></i>
+                            Consultations
+                        </h6>
+
+                        <h2>{{ nb_consultation }}</h2>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- TITLE -->
+            <h2 class="text-center mt-5 mb-4">
+                Résumé des activités
+            </h2>
+
+            <!-- CHART -->
+            <div class="chart-container">
+
+                <canvas id="pieChart"></canvas>
+
+            </div>
+
+        </div>
+
+        {% endblock %}
+
+    </div>
+
+</div>
+
+<!-- MOBILE MENU -->
+<div class="offcanvas offcanvas-start text-bg-dark"
+     id="mobileMenu">
+
+    <div class="offcanvas-header">
+
+        <h5 class="offcanvas-title">
+            Clinique
+        </h5>
+
+        <button class="btn-close btn-close-white"
+                data-bs-dismiss="offcanvas">
+        </button>
+
+    </div>
+
+    <div class="offcanvas-body d-flex flex-column gap-2">
+
+        <a href="#" class="text-white">
+            Dashboard
+        </a>
+
+        <a href="#" class="text-white">
+            Patients
+        </a>
+
+        <a href="#" class="text-white">
+            Docteurs
+        </a>
+
+        <a href="#" class="text-white">
+            Rendez-vous
+        </a>
+
+    </div>
+
+</div>
+
+<!-- FOOTER -->
+<footer class="footer-site text-white">
+
+    <div class="container py-4">
+
+        <p class="text-center mb-0">
+            &copy; 2025 Clinique — Tous droits réservés.
+        </p>
+
+    </div>
+
+</footer>
+
+<!-- TOASTS -->
+<div class="toast-container position-fixed top-0 end-0 p-3">
+
+    {% for message in messages %}
+
+        <div class="toast align-items-center text-bg-success border-0 mb-2"
+             role="alert">
+
+            <div class="d-flex">
+
+                <div class="toast-body">
+                    {{ message }}
+                </div>
+
+                <button type="button"
+                        class="btn-close btn-close-white me-2 m-auto"
+                        data-bs-dismiss="toast">
+                </button>
+
+            </div>
+
+        </div>
+
+    {% endfor %}
+
+</div>
+
+<!-- BOOTSTRAP JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+
+    /* CHART */
+
+    new Chart(document.getElementById('pieChart'), {
+
+        type: 'bar',
+
+        data: {
+
+            labels: [
+                'JAN',
+                'FEV',
+                'MAR',
+                'AVR',
+                'MAI',
+                'JUIN',
+                'JUIL',
+                'AOUT',
+                'SEPT',
+                'OCT',
+                'NOV',
+                'DEC'
+            ],
+
+            datasets: [{
+
+                data: [23, 34, 21, 12, 7, 34, 32, 34, 12, 12, 8, 4],
+
+                backgroundColor: '#FFCE56',
+
+                borderWidth: 1
+
+            }]
+
+        },
+
+        options: {
+
+            responsive: true,
+
+            plugins: {
+
+                legend: {
+                    display: false
+                }
+
+            }
+
+        }
+
+    });
+
+
+    /* TOASTS */
+
+    document.addEventListener("DOMContentLoaded", function () {
+
+        const toastElements =
+            document.querySelectorAll('.toast');
+
+        toastElements.forEach(function(toastElement) {
+
+            const toast =
+                new bootstrap.Toast(toastElement, {
+                    delay: 3000
+                });
+
+            toast.show();
+
+        });
+
+    });
+
+</script>
+
+</body>
+</html>

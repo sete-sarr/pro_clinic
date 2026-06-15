@@ -1,0 +1,25 @@
+{% extends "dashboard.html" %}
+{% block title %}Supprimer consultation{% endblock %}
+
+{% block content %}
+<div class="card p-4 shadow-sm col-md-6 mx-auto text-center">
+    <h4 class="text-danger mb-3">⚠️ Supprimer le rendez-vous</h4>
+
+    <p>
+        Confirmez-vous la suppression de le rendez-vous
+        <strong>{{ object.date|date:"d/m/Y" }}</strong> ?
+    </p>
+
+    <form method="post">
+        {% csrf_token %}
+        <div class="d-flex justify-content-center gap-3 mt-4">
+            <a href="{% url 'rendez_vous:list' %}" class="btn btn-secondary">
+                Annuler
+            </a>
+            <button class="btn btn-danger">
+                Supprimer
+            </button>
+        </div>
+    </form>
+</div>
+{% endblock %}
