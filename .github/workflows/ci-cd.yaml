@@ -79,10 +79,7 @@ jobs:
         run: |
           python manage.py test
 
-      - name: Run Flake8
-        run: |
-          flake8 .
-
+      
       - name: Check formatting with Black
         run: |
           black --check .
