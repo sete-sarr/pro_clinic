@@ -77,7 +77,7 @@ jobs:
 
       - name: Run tests
         run: |
-          pytest
+          python manage.py test
 
       - name: Run Flake8
         run: |
