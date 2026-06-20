@@ -20,5 +20,6 @@ redis==7.1.0
 requests==2.32.5
 twilio==9.10.4
 flake8
+pytest
 weasyprint==68.1
 
