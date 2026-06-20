@@ -39,10 +39,7 @@ jobs:
           --health-retries=5
 
     env:
-      DJANGO_SETTINGS_MODULE: config.settings
-
-      SECRET_KEY: ${{ secrets.SECRET_KEY }}
-
+      
       DEBUG: "False"
 
       DATABASE_NAME: mydatabase
