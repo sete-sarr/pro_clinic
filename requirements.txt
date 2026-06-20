@@ -26,5 +26,7 @@ pytest-django
 pytest-cov
 factory-boy
 Faker
+black
+isort
 weasyprint==68.1
 
