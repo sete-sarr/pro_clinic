@@ -14,8 +14,9 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 
 
 
+from logging import config
 from pathlib import Path
-from turtle import circle
+
 from datetime import timedelta
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -99,6 +100,10 @@ SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
     'AUTH_HEADER_TYPES': ('Bearer',),
 }
+
+# TWILIO_ACCOUNT_SID = config("TWILIO_ACCOUNT_SID")
+# TWILIO_AUTH_TOKEN = config("TWILIO_AUTH_TOKEN")
+# TWILIO_PHONE_NUMBER = config("TWILIO_PHONE_NUMBER")
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',

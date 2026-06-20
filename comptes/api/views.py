@@ -7,6 +7,7 @@ from rest_framework import status
 
 from patient.models import Patient
 from comptes.models import OTP
+from comptes.tasks import send_opt, send_otp_sms
 
 from django.contrib.auth.models import User
 
@@ -26,6 +27,7 @@ class SendOptAPIView(APIView):
 
         telephone = request.data.get("telephone")
         numero_patient = request.data.get("numero_patient")
+        email= request.data.get("email")
 
         try:
             patient = Patient.objects.get(
@@ -61,9 +63,8 @@ class SendOptAPIView(APIView):
             code=code
         )
 
-        print(
-            f"OTP envoyé à {telephone} : {code}"
-        )
+        send_opt.delay(code, email)
+        send_otp_sms.delay(patient.telephone, code)
 
         return Response(
             {
@@ -186,8 +187,4 @@ class VerifyOtpAPIView(APIView):
             }
         ) 
 
-
-        #  "otp_id": 10,
-        #  "otp": "303804",
-        #  "password": "sete1234",
-        #  "password_confirm": "sete1234"     
+     

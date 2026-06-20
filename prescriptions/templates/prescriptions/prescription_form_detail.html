@@ -61,7 +61,7 @@
 }
 </style>
 <div class="mb-4">
-    <h3>🧾 Facture</h3>
+    <h3>📋 Prescription</h3>
     <p><strong>Patient :</strong> {{ prescription.patient }}</p>
     <p><strong>Date :</strong> {{ prescription.date_prescription }}</p>
 </div>
@@ -92,8 +92,10 @@
                     <tr class="form-row">
                         <td>{{ form.medicament }}</td>
                         <td>{{ form.dosage }}</td>
+                        <td>{{ form.frequence }}</td>
                         <td>{{ form.duree }}</td>
-                         <td>{{ form.instruction }}</td>
+                        <td>{{ form.quantite }}</td>
+                            <td>{{ form.instruction }}</td>
                         <td class="ligne-total">0</td>
                         <td>
                             <button type="button" class="btn btn-danger btn-sm delete-row">

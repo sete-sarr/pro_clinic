@@ -11,6 +11,4 @@ class FactureAdmin(admin.ModelAdmin):
     search_fields = ('patient__nom',)
     inlines=[DetailFactureAdmin]
 
-
-
 # Register your models here.

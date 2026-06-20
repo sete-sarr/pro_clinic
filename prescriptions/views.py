@@ -84,6 +84,7 @@ class CreateDetailPrescriptionView(DoctorLoginRequiredMixin,TemplateResponseMixi
 
     template_name = 'prescriptions/prescription_form_detail.html'
     
+    
    
 
     def dispatch(self, request, *args, **kwargs):
