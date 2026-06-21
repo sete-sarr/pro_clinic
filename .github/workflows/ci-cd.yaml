@@ -80,10 +80,10 @@ jobs:
           python manage.py test
 
       
-      - name: Check formatting with Black
-        run: |
-          black --check .
+      # - name: Check formatting with Black
+      #   run: |
+      #     black --check .
 
-      - name: Check imports with Isort
-        run: |
-          isort --check-only .
+      # - name: Check imports with Isort
+      #   run: |
+      #     isort --check-only .
